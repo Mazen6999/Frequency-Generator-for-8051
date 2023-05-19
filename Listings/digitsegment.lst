@@ -1,0 +1,282 @@
+C51 COMPILER V9.60.7.0   DIGITSEGMENT                                                      04/26/2023 00:46:00 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE DIGITSEGMENT
+OBJECT MODULE PLACED IN .\Objects\digitsegment.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE digitsegment.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listi
+                    -ngs\digitsegment.lst) TABS(2) OBJECT(.\Objects\digitsegment.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          
+   3          // Define the segments of the 7-segment display
+   4          sbit SEG_A = P2^0;
+   5          sbit SEG_B = P2^1;
+   6          sbit SEG_C = P2^2;
+   7          sbit SEG_D = P2^3;
+   8          sbit SEG_E = P2^4;
+   9          sbit SEG_F = P2^5;
+  10          sbit SEG_G = P2^6;
+  11          sbit SEG_DP = P2^7;
+  12          
+  13          
+  14          // Define the pins for the common cathodes of the 4 digits
+  15          sbit DIGIT1 = P0^0;
+  16          sbit DIGIT2 = P0^1;
+  17          sbit DIGIT3 = P0^2;
+  18          sbit DIGIT4 = P0^3;
+  19          
+  20          sbit row1 = P1^3;  // Define row pins
+  21          sbit row2 = P1^0;
+  22          sbit row3 = P1^1;
+  23          sbit row4 = P1^2;
+  24          sbit col1 = P1^4;  // Define column pins
+  25          sbit col2 = P1^5;
+  26          sbit col3 = P1^6;
+  27          sbit col4 = P1^7;
+  28          
+  29          // intterupt
+  30          sbit intr = P3^2;
+  31          
+  32          //output pin
+  33          sbit FREQ_OUT = P3^7;
+  34          
+  35          void delay_ms(unsigned int ms);
+  36          void segments_init();
+  37          int get_key(void);
+  38          void T1Delay(float time);
+  39          void setwave ();
+  40          void settimer();
+  41          void starttimer();
+  42          void resettimer();
+  43          void stoptimeINT();
+  44          void stoptimer();
+  45          
+  46          // Define the characters to be displayed on the 7-segment display
+  47          unsigned char char_table[] = {
+  48              0x40, // 0
+  49              0x79, // 1
+  50              0x24, // 2
+  51              0x30, // 3
+  52              0x19, // 4
+  53              0x12, // 5
+  54              0x02, // 6
+C51 COMPILER V9.60.7.0   DIGITSEGMENT                                                      04/26/2023 00:46:00 PAGE 2   
+
+  55              0x78, // 7
+  56              0x00, // 8
+  57              0x10  // 9
+  58          };
+  59          
+  60              int segconv[4];
+  61              double freq;
+  62              unsigned int temp;
+  63              int seg_table[4]={0,0,0,0};
+  64              char incseg=0;
+  65              char hold=0;
+  66              int key;
+  67          
+  68          
+  69          void main()
+  70          {
+  71   1          
+  72   1          
+  73   1        // Initialize the pins for the segments and digits as output
+  74   1          SEG_A = 0;SEG_B = 0;SEG_C = 0;SEG_D = 0;SEG_E = 0;SEG_F = 0;SEG_G = 0;SEG_DP = 0;
+  75   1          DIGIT1 = 0;DIGIT2 = 0;DIGIT3 = 0;DIGIT4 = 0;FREQ_OUT = 0;
+  76   1          EX0= 1 ;
+  77   1          EX1= 1  ; // enable EXT interrupts 0
+  78   1          IT1= 1  ;        ; // activates on falling edge from 1 to 0
+  79   1          EA= 1   ;       ; //enable global interrupts
+  80   1          ET1=1   ;         ;//enable timer interrupts o
+  81   1        
+  82   1          P2 = char_table[0];
+  83   1        
+  84   1          while (1) {
+  85   2            
+  86   2            char i;
+  87   2            float freq=0;
+  88   2            // scan keypad
+  89   2            
+  90   2            
+  91   2            
+  92   2            
+  93   2          getkey:  key = 69;  // Initialize key variable
+  94   2          // Scan rows for a pressed key
+  95   2          segments_init();
+  96   2          
+  97   2          while(1){
+  98   3          row1 = 0; row2 = 1; row3 = 1; row4 = 1;
+  99   3          if (col2 == 0 && hold == 0){ key = 0;hold=1;delay_ms(300);break;}
+ 100   3      
+ 101   3          row1 = 1; row2 = 0; row3 = 1; row4 = 1;
+ 102   3          if (col1 == 0 && hold == 0){ key = 1;hold=1;delay_ms(300);break;}
+ 103   3          if (col2 == 0 && hold == 0){ key = 2;hold=1;delay_ms(300);break;}
+ 104   3          if (col3 == 0 && hold == 0){ key = 3;hold=1;delay_ms(300);break;}
+ 105   3      
+ 106   3          row1 = 1; row2 = 1; row3 = 0; row4 = 1;
+ 107   3          if (col1 == 0 && hold == 0){ key = 4;hold=1;delay_ms(300);break;}
+ 108   3          if (col2 == 0 && hold == 0){ key = 5;hold=1;delay_ms(300);break;}
+ 109   3          if (col3 == 0 && hold == 0){ key = 6;hold=1;delay_ms(300);break;}
+ 110   3      
+ 111   3          row1 = 1; row2 = 1; row3 = 1; row4 = 0;
+ 112   3          if (col1 == 0 && hold == 0){ key = 7;hold=1;delay_ms(300);break;}
+ 113   3          if (col2 == 0 && hold == 0){ key = 8;hold=1;delay_ms(300);break;}
+ 114   3          if (col3 == 0 && hold == 0){ key = 9;hold=1;delay_ms(300);break;}
+ 115   3          break;
+ 116   3          }
+C51 COMPILER V9.60.7.0   DIGITSEGMENT                                                      04/26/2023 00:46:00 PAGE 3   
+
+ 117   2            
+ 118   2            
+ 119   2            // check keypad input
+ 120   2            if(key == 69){hold=0; goto getkey;}
+ 121   2              
+ 122   2            // If key is pressed
+ 123   2            seg_table[0]=key;
+ 124   2            segconv[incseg]=seg_table[0];
+ 125   2            if(incseg>0){
+ 126   3            for(i=0;i<incseg;i++){seg_table[incseg-i]=segconv[i];}
+ 127   3            }
+ 128   2            incseg++;
+ 129   2              
+ 130   2        
+ 131   2          }
+ 132   1      }
+ 133          
+ 134          void setwave ()
+ 135          {
+ 136   1            
+ 137   1            freq = seg_table[0]+seg_table[1]*10+seg_table[2]*100+seg_table[3]*1000;
+ 138   1            freq = freq*2;
+ 139   1            freq=(1000000.0/(freq*1.085))-9;
+ 140   1            freq=65536-freq;
+ 141   1            temp=(int)freq;
+ 142   1            TL1=temp%256;
+ 143   1            TH1=temp/256; 
+ 144   1      }
+ 145          void settimer ()
+ 146          {
+ 147   1        TMOD=0x10;
+ 148   1        TR1=1;
+ 149   1      }
+ 150          void stoptimer ()
+ 151          {
+ 152   1        TR1=0;
+ 153   1        seg_table[0]=0;seg_table[1]=0;seg_table[2]=0;seg_table[3]=0;
+ 154   1        incseg=0;
+ 155   1      }
+ 156          
+ 157          // Function to generate frequency
+ 158          void freqGEN  (void) interrupt 0
+ 159          { 
+ 160   1          setwave();
+ 161   1          settimer();
+ 162   1        
+ 163   1      }
+ 164          
+ 165          
+ 166          void stoptimeINT  (void) interrupt 2
+ 167          { 
+ 168   1          stoptimer();
+ 169   1          
+ 170   1      }
+ 171          
+ 172          
+ 173          void timer1_intr (void) interrupt 3
+ 174          {
+ 175   1        
+ 176   1        TL1=temp%256;
+ 177   1        TH1=temp/256; 
+ 178   1        FREQ_OUT = ~ FREQ_OUT;
+C51 COMPILER V9.60.7.0   DIGITSEGMENT                                                      04/26/2023 00:46:00 PAGE 4   
+
+ 179   1      }
+ 180          
+ 181          
+ 182          
+ 183          
+ 184          // Function to introduce a delay in milliseconds
+ 185          void delay_ms(unsigned int ms)
+ 186          {
+ 187   1          unsigned int i, j;
+ 188   1          for (i = 0; i < ms; i++) {
+ 189   2              for (j = 0; j < 123; j++) {
+ 190   3                  // This loop introduces a delay of approximately 1ms
+ 191   3                  // Adjust the value of j based on your clock frequency
+ 192   3              }
+ 193   2          }
+ 194   1      }
+ 195          
+ 196          
+ 197          // Fuction to write on 7-segment
+ 198          void segments_init()
+ 199          {
+ 200   1        char i;
+ 201   1        for (i = 0; i < 4; i++)
+ 202   1        {   
+ 203   2          switch (i) {
+ 204   3            
+ 205   3            case 0:
+ 206   3            // Turn on the first digit
+ 207   3            P2 = char_table[seg_table[3]];
+ 208   3            DIGIT1 = 1;
+ 209   3            DIGIT2 = 0;
+ 210   3            DIGIT3 = 0;
+ 211   3            DIGIT4 = 0;
+ 212   3            break;
+ 213   3      
+ 214   3            
+ 215   3            case 1:
+ 216   3            // Turn on the second digit
+ 217   3            P2 = char_table[seg_table[2]];
+ 218   3            DIGIT1 = 0;
+ 219   3            DIGIT2 = 1;
+ 220   3            DIGIT3 = 0;
+ 221   3            DIGIT4 = 0;
+ 222   3            break;    
+ 223   3            
+ 224   3          
+ 225   3            case 2:
+ 226   3            // Turn on the third digit
+ 227   3            P2 = char_table[seg_table[1]];
+ 228   3            DIGIT1 = 0;
+ 229   3            DIGIT2 = 0;
+ 230   3            DIGIT3 = 1;
+ 231   3            DIGIT4 = 0;
+ 232   3            break;  
+ 233   3            
+ 234   3            
+ 235   3            case 3:
+ 236   3            // Turn on the fourth digit
+ 237   3            P2 = char_table[seg_table[0]];
+ 238   3            DIGIT1 = 0;
+ 239   3            DIGIT2 = 0;
+ 240   3            DIGIT3 = 0;
+C51 COMPILER V9.60.7.0   DIGITSEGMENT                                                      04/26/2023 00:46:00 PAGE 5   
+
+ 241   3            DIGIT4 = 1;
+ 242   3            break;
+ 243   3              }
+ 244   2          
+ 245   2          
+ 246   2          delay_ms(1);
+ 247   2        
+ 248   2        }
+ 249   1        
+ 250   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    742    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     36       5
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

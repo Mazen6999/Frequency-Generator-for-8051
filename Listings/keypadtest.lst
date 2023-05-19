@@ -1,0 +1,74 @@
+C51 COMPILER V9.60.7.0   KEYPADTEST                                                        04/17/2023 22:43:52 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE KEYPADTEST
+OBJECT MODULE PLACED IN .\Objects\keypadtest.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE keypadtest.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listing
+                    -s\keypadtest.lst) TABS(2) OBJECT(.\Objects\keypadtest.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          
+   3          sbit row1 = P3^0;  // Define row pins
+   4          sbit row2 = P3^1;
+   5          sbit row3 = P3^2;
+   6          sbit row4 = P3^3;
+   7          sbit col1 = P3^4;  // Define column pins
+   8          sbit col2 = P3^5;
+   9          sbit col3 = P3^6;
+  10          sbit col4 = P3^7;
+  11          
+  12          char get_key(void);  // Function prototype
+  13          
+  14          void main() {
+  15   1          char key = '\0';  // Initialize key variable
+  16   1          while(1) {  // Infinite loop
+  17   2              key = get_key();  // Get key value
+  18   2              if (key != '\0') {  // If key is pressed
+  19   3                  // Do something with the key value
+  20   3              }
+  21   2          }
+  22   1      }
+  23          
+  24          char get_key(void) {
+  25   1          char key = '\0';  // Initialize key variable
+  26   1          // Scan rows for a pressed key
+  27   1          row1 = 0; row2 = 1; row3 = 1; row4 = 1;
+  28   1          if (col1 == 0) key = '1';
+  29   1          if (col2 == 0) key = '2';
+  30   1          if (col3 == 0) key = '3';
+  31   1          if (col4 == 0) key = 'A';
+  32   1          row1 = 1; row2 = 0; row3 = 1; row4 = 1;
+  33   1          if (col1 == 0) key = '4';
+  34   1          if (col2 == 0) key = '5';
+  35   1          if (col3 == 0) key = '6';
+  36   1          if (col4 == 0) key = 'B';
+  37   1          row1 = 1; row2 = 1; row3 = 0; row4 = 1;
+  38   1          if (col1 == 0) key = '7';
+  39   1          if (col2 == 0) key = '8';
+  40   1          if (col3 == 0) key = '9';
+  41   1          if (col4 == 0) key = 'C';
+  42   1          row1 = 1; row2 = 1; row3 = 1; row4 = 0;
+  43   1          if (col1 == 0) key = '*';
+  44   1          if (col2 == 0) key = '0';
+  45   1          if (col3 == 0) key = '#';
+  46   1          if (col4 == 0) key = 'D';
+  47   1          return key;  // Return key value
+  48   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    123    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+C51 COMPILER V9.60.7.0   KEYPADTEST                                                        04/17/2023 22:43:52 PAGE 2   
+
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

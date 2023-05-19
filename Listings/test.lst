@@ -1,0 +1,254 @@
+C51 COMPILER V9.60.7.0   TEST                                                              04/18/2023 18:38:17 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE TEST
+OBJECT MODULE PLACED IN .\Objects\test.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE test.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\test
+                    -.lst) TABS(2) OBJECT(.\Objects\test.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          
+   3          // Define the segments of the 7-segment display
+   4          sbit SEG_A = P2^0;
+   5          sbit SEG_B = P2^1;
+   6          sbit SEG_C = P2^2;
+   7          sbit SEG_D = P2^3;
+   8          sbit SEG_E = P2^4;
+   9          sbit SEG_F = P2^5;
+  10          sbit SEG_G = P2^6;
+  11          sbit SEG_DP = P2^7;
+  12          
+  13          
+  14          // Define the pins for the common cathodes of the 4 digits
+  15          sbit DIGIT1 = P1^0;
+  16          sbit DIGIT2 = P1^1;
+  17          sbit DIGIT3 = P1^2;
+  18          sbit DIGIT4 = P1^3;
+  19          
+  20          
+  21          
+  22          /*
+  23           * Title: Variable Frequency Generator
+  24           * Author: Osama Mazhar
+  25           * Date: 21st Jan 2012
+  26           * Email: osamazhar@yahoo.com
+  27           */
+  28           
+  29            
+  30          #include <reg51.h>
+  31          
+  32          #define KEYPAD P3                       
+  33          #define ldata P0        //sfr ldata = 0x0B0; for P3
+  34          
+  35          sbit rs = P3^5;
+  36          sbit rw = P3^6;
+  37          sbit en = P3^7;
+  38          sbit busy = P0^7;
+  39          sbit Clock = P3^0;
+  40          sbit Status = P3^1;
+  41          
+  42          
+  43          
+  44          
+  45          void MSDelay(unsigned int);
+  46          unsigned char KeypadRead();
+  47          unsigned int GetInput();
+  48          void TimerH(unsigned char, unsigned char);
+  49          void TimerL(unsigned char, unsigned char);
+  50          
+  51          unsigned char code keypad[4][4] = {'7','8','9','/','4','5','6','X','1','2','3','-','.','0','=','+'};
+  52          
+  53          
+  54          
+C51 COMPILER V9.60.7.0   TEST                                                              04/18/2023 18:38:17 PAGE 2   
+
+  55          void main()
+  56            {
+  57   1         float Frequency;
+  58   1         unsigned char colloc;
+  59   1      
+  60   1         Status = 0;
+  61   1         KEYPAD = 0xF0;     // make higher bits of keypad port that is column bits input and low row bits outputs
+  62   1         
+  63   1         
+  64   1      main:
+  65   1         Frequency = GetInput();
+  66   1                        
+  67   1         
+  68   1         Status = 1;
+  69   1         while(1)           //2 Machine Cycle
+  70   1          {
+  71   2           
+  72   2           colloc = KEYPAD;       //2 MC     
+  73   2           colloc &= 0xF0;        //2 MC     
+  74   2           if(colloc == 0xE0)       //4 MC
+  75   2            {
+  76   3             MSDelay(5);
+  77   3             colloc = KEYPAD;     //read the columns
+  78   3             colloc &= 0xF0;      //mask unused bits
+  79   3             if(colloc == 0xE0)
+  80   3              {
+  81   4               Status = 0;
+  82   4               goto main;  
+  83   4              }
+  84   3            }                       
+  85   2          }
+  86   1        }             //main braces
+  87          
+  88          unsigned int GetInput()
+  89            {
+  90   1         unsigned char L, cnt, Key[5];
+  91   1         unsigned int Entry = 0;
+  92   1         cnt = 0;
+  93   1         do
+  94   1          {
+  95   2      Re:    Key[cnt] = KeypadRead();
+  96   2           L = Key[cnt];
+  97   2           if(L == '+' | L == '-')
+  98   2            goto Re;
+  99   2           if(L == '=')
+ 100   2            continue;
+ 101   2           Key[cnt] = Key[cnt] - 48;
+ 102   2           cnt++;
+ 103   2      
+ 104   2          }
+ 105   1         while(L != '=' & cnt != 5);
+ 106   1         switch(cnt)
+ 107   1          {
+ 108   2           case(1):
+ 109   2            {
+ 110   3             Entry = Key[0];
+ 111   3             break;
+ 112   3            }
+ 113   2           case(2):
+ 114   2            {
+ 115   3             Entry = (Key[0] * 10) + Key[1];
+ 116   3             break;
+C51 COMPILER V9.60.7.0   TEST                                                              04/18/2023 18:38:17 PAGE 3   
+
+ 117   3            }
+ 118   2           case(3):
+ 119   2            {
+ 120   3             Entry = (Key[0] * 100) + (Key[1] * 10) + Key[2];
+ 121   3             break;
+ 122   3            }
+ 123   2           case(4):
+ 124   2            {
+ 125   3             Entry = (Key[0] * 1000) + (Key[1] * 100) + (Key[2] * 10) + Key[3];
+ 126   3             break;
+ 127   3            }
+ 128   2           case(5):
+ 129   2            {
+ 130   3             Entry = (Key[0] * 10000) + (Key[1] * 1000) + (Key[2] * 100) + (Key[3] * 10) + Key[4];
+ 131   3             break;
+ 132   3            }
+ 133   2          }
+ 134   1         return Entry;
+ 135   1        }
+ 136          
+ 137          unsigned char KeypadRead()
+ 138            {
+ 139   1          unsigned char colloc, rowloc;     
+ 140   1          do
+ 141   1             {                        
+ 142   2             KEYPAD = 0xF0;       // ground all rows at once
+ 143   2             colloc = KEYPAD;       // read the port for columns
+ 144   2             colloc &= 0xF0;        // mask row bits
+ 145   2             }
+ 146   1          while(colloc != 0xF0);        // check until all keys are released
+ 147   1          
+ 148   1          do
+ 149   1             {
+ 150   2               do
+ 151   2                {
+ 152   3              MSDelay(8);       //call delay
+ 153   3              colloc = KEYPAD;    //see if any key is pressed
+ 154   3              colloc &= 0xF0;     // mask unsused bits
+ 155   3              }
+ 156   2             while(colloc == 0xF0);     // keep checking for keypress
+ 157   2      
+ 158   2            MSDelay(8);       // call delay for debounce
+ 159   2            colloc = KEYPAD;      // read columns
+ 160   2            colloc &= 0xF0;       // mask unused bits
+ 161   2            }
+ 162   1            while(colloc == 0xF0);      // wait for keypress
+ 163   1      
+ 164   1            while(1)
+ 165   1              {
+ 166   2                KEYPAD &= 0xF0;   // masking row bits
+ 167   2                KEYPAD |= 0x0E;   // now ground row 0 0E = 00001110b ORing won't affect column data
+ 168   2                colloc = KEYPAD;  // read columns
+ 169   2                colloc &= 0xF0;   // mask row bits
+ 170   2                if(colloc != 0xF0)  // column detected
+ 171   2                  {
+ 172   3                   rowloc = 0;  // save row location
+ 173   3                   break;
+ 174   3                  }
+ 175   2                KEYPAD &= 0xF0;
+ 176   2                KEYPAD |= 0x0D;   // ground row 1 0D = 00001101b  ORing won't affect column data
+ 177   2                colloc = KEYPAD;  // read columns
+ 178   2                colloc &= 0xF0;   // mask row bits
+C51 COMPILER V9.60.7.0   TEST                                                              04/18/2023 18:38:17 PAGE 4   
+
+ 179   2                if(colloc != 0xF0)  // column detected
+ 180   2                  {
+ 181   3                   rowloc = 1;  // save row location
+ 182   3                   break;
+ 183   3                  }
+ 184   2                KEYPAD &= 0XF0;
+ 185   2                KEYPAD |= 0x0B;   // ground row 2 0B = 00001011b
+ 186   2                colloc = KEYPAD;  // read columns
+ 187   2                colloc &= 0xF0;   // mask row bits
+ 188   2                if(colloc != 0xF0)  // column detected
+ 189   2                  {
+ 190   3                   rowloc = 2;  // save row location
+ 191   3                   break;
+ 192   3                  }
+ 193   2                KEYPAD &= 0XF0;
+ 194   2                KEYPAD |= 0x07;   // ground row 3 07 = 00000111b
+ 195   2                colloc = KEYPAD;  // read columns
+ 196   2                colloc &= 0xF0;   // mask row bits
+ 197   2                if(colloc != 0xF0)  // column detected
+ 198   2                rowloc = 3;   // save row location
+ 199   2                break;
+ 200   2              }
+ 201   1          //check columns and send result to 
+ 202   1          if(colloc == 0xE0)        // 0E = 00001110
+ 203   1            return keypad[rowloc][0];
+ 204   1          else if(colloc == 0xD0)       // 0D = 00001101
+ 205   1            return keypad[rowloc][1];
+ 206   1          else if(colloc == 0xB0)       // 0B = 00001011
+ 207   1            return keypad[rowloc][2];
+ 208   1          else
+ 209   1            return keypad[rowloc][3];
+ 210   1          }
+ 211            
+ 212              
+ 213          void MSDelay(unsigned int count) 
+ 214          {// mSec Delay 12 Mhz 
+ 215   1           unsigned int i;              
+ 216   1           while(count)
+ 217   1          {
+ 218   2               i = 122; 
+ 219   2           while(i>0)
+ 220   2            i--;
+ 221   2               count--;
+ 222   2            }
+ 223   1      }
+ 224          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    557    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      13
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

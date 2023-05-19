@@ -1,0 +1,3 @@
+".\Objects\digitsegment.obj" 
+TO ".\Objects\Freqgentest" 
+PRINT(".\Listings\Freqgentest.m51")

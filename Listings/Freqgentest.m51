@@ -1,0 +1,349 @@
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    04/26/2023  00:46:00  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.4.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\digitsegment.obj TO .\Objects\Freqgentest PRINT (.\Listings\Freqgentest.m51)
+
+
+MEMORY MODEL: SMALL WITH FLOATING POINT ARITHMETIC
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\digitsegment.obj (DIGITSEGMENT)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPADD)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPMUL)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPDIV)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FCAST)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?CASTF)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPGETOPN)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?IMUL)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LNEG)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  .\Objects\Freqgentest (DIGITSEGMENT)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0024H     UNIT         ?DT?DIGITSEGMENT
+            DATA    002CH     0005H     UNIT         _DATA_GROUP_
+            IDATA   0031H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0003H     ABSOLUTE     
+                    0006H     000DH                  *** GAP ***
+            CODE    0013H     0003H     ABSOLUTE     
+                    0016H     0005H                  *** GAP ***
+            CODE    001BH     0003H     ABSOLUTE     
+                    001EH     07E2H                  *** GAP ***
+            CODE    0800H     037DH     UNIT         ?C?LIB_CODE
+            CODE    0B7DH     0149H     UNIT         ?PR?MAIN?DIGITSEGMENT
+            CODE    0CC6H     00AFH     UNIT         ?PR?SETWAVE?DIGITSEGMENT
+            CODE    0D75H     008CH     UNIT         ?C_C51STARTUP
+            CODE    0E01H     005EH     UNIT         ?PR?SEGMENTS_INIT?DIGITSEGMENT
+            CODE    0E5FH     003EH     UNIT         ?PR?FREQGEN?DIGITSEGMENT
+            CODE    0E9DH     0020H     UNIT         ?PR?_DELAY_MS?DIGITSEGMENT
+            CODE    0EBDH     001DH     UNIT         ?C_INITSEG
+            CODE    0EDAH     0016H     UNIT         ?PR?STOPTIMER?DIGITSEGMENT
+            CODE    0EF0H     000EH     UNIT         ?PR?TIMER1_INTR?DIGITSEGMENT
+            CODE    0EFEH     0008H     UNIT         ?PR?STOPTIMEINT?DIGITSEGMENT
+            CODE    0F06H     0006H     UNIT         ?PR?SETTIMER?DIGITSEGMENT
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\Freqgentest (DIGITSEGMENT)
+
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  04/26/2023  00:46:00  PAGE 2
+
+
+
+SEGMENT                                  DATA_GROUP 
+  +--> CALLED SEGMENT                  START    LENGTH
+------------------------------------------------------
+?PR?FREQGEN?DIGITSEGMENT               -----    -----
+  +--> ?PR?SETWAVE?DIGITSEGMENT
+  +--> ?PR?SETTIMER?DIGITSEGMENT
+
+*** NEW ROOT ***************************************************
+
+?PR?STOPTIMEINT?DIGITSEGMENT           -----    -----
+  +--> ?PR?STOPTIMER?DIGITSEGMENT
+
+*** NEW ROOT ***************************************************
+
+?C_C51STARTUP                          -----    -----
+  +--> ?PR?MAIN?DIGITSEGMENT
+  +--> ?C_INITSEG
+
+?PR?MAIN?DIGITSEGMENT                  002CH    0005H
+  +--> ?PR?SEGMENTS_INIT?DIGITSEGMENT
+  +--> ?PR?_DELAY_MS?DIGITSEGMENT
+
+?PR?SEGMENTS_INIT?DIGITSEGMENT         -----    -----
+  +--> ?PR?_DELAY_MS?DIGITSEGMENT
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\Freqgentest (DIGITSEGMENT)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        DIGITSEGMENT
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  B:00A0H.0       PUBLIC        SEG_A
+  D:0090H         PUBLIC        P1
+  B:00A0H.1       PUBLIC        SEG_B
+  D:00A0H         PUBLIC        P2
+  C:0E01H         PUBLIC        segments_init
+  B:00A0H.2       PUBLIC        SEG_C
+  D:00B0H         PUBLIC        P3
+  C:0CC6H         PUBLIC        setwave
+  B:00A0H.3       PUBLIC        SEG_D
+  B:00A0H.4       PUBLIC        SEG_E
+  B:00A0H.5       PUBLIC        SEG_F
+  B:00A8H.7       PUBLIC        EA
+  B:00A0H.6       PUBLIC        SEG_G
+  B:00B0H.7       PUBLIC        FREQ_OUT
+  B:0090H.3       PUBLIC        row1
+  C:0E5FH         PUBLIC        freqGEN
+  D:0008H         PUBLIC        char_table
+  B:0090H.0       PUBLIC        row2
+  B:0090H.1       PUBLIC        row3
+  B:0090H.2       PUBLIC        row4
+  B:0080H.0       PUBLIC        DIGIT1
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  04/26/2023  00:46:00  PAGE 3
+
+
+  B:0080H.1       PUBLIC        DIGIT2
+  B:0080H.2       PUBLIC        DIGIT3
+  C:0B7DH         PUBLIC        main
+  B:0080H.3       PUBLIC        DIGIT4
+  D:0012H         PUBLIC        hold
+  D:0013H         PUBLIC        seg_table
+  D:001BH         PUBLIC        freq
+  D:0089H         PUBLIC        TMOD
+  D:001FH         PUBLIC        temp
+  D:0021H         PUBLIC        key
+  B:00A8H.3       PUBLIC        ET1
+  B:00A8H.0       PUBLIC        EX0
+  D:008DH         PUBLIC        TH1
+  B:00A8H.2       PUBLIC        EX1
+  B:0088H.2       PUBLIC        IT1
+  D:008BH         PUBLIC        TL1
+  C:0E9DH         PUBLIC        _delay_ms
+  B:00A0H.7       PUBLIC        SEG_DP
+  B:0088H.6       PUBLIC        TR1
+  C:0EFEH         PUBLIC        stoptimeINT
+  C:0EDAH         PUBLIC        stoptimer
+  B:0090H.4       PUBLIC        col1
+  B:0090H.5       PUBLIC        col2
+  C:0F06H         PUBLIC        settimer
+  B:0090H.6       PUBLIC        col3
+  C:0EF0H         PUBLIC        timer1_intr
+  D:0023H         PUBLIC        segconv
+  D:002BH         PUBLIC        incseg
+  -------         PROC          MAIN
+  -------         DO            
+  C:0BADH         SYMBOL        getkey
+  -------         DO            
+  D:002CH         SYMBOL        i
+  D:002DH         SYMBOL        freq
+  -------         ENDDO         
+  -------         ENDDO         
+  C:0B7DH         LINE#         69
+  C:0B7DH         LINE#         70
+  C:0B7DH         LINE#         74
+  C:0B8DH         LINE#         75
+  C:0B97H         LINE#         76
+  C:0B99H         LINE#         77
+  C:0B9BH         LINE#         78
+  C:0B9DH         LINE#         79
+  C:0B9FH         LINE#         80
+  C:0BA1H         LINE#         82
+  C:0BA4H         LINE#         84
+  C:0BA4H         LINE#         87
+  C:0BADH         LINE#         93
+  C:0BB3H         LINE#         95
+  C:0BB6H         LINE#         97
+  C:0BB6H         LINE#         98
+  C:0BBEH         LINE#         99
+  C:0BCCH         LINE#         101
+  C:0BD4H         LINE#         102
+  C:0BE2H         LINE#         103
+  C:0BF0H         LINE#         104
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  04/26/2023  00:46:00  PAGE 4
+
+
+  C:0BFEH         LINE#         106
+  C:0C06H         LINE#         107
+  C:0C14H         LINE#         108
+  C:0C22H         LINE#         109
+  C:0C30H         LINE#         111
+  C:0C38H         LINE#         112
+  C:0C46H         LINE#         113
+  C:0C54H         LINE#         114
+  C:0C6AH         LINE#         115
+  C:0C6AH         LINE#         116
+  C:0C6AH         LINE#         120
+  C:0C77H         LINE#         123
+  C:0C7DH         LINE#         124
+  C:0C89H         LINE#         125
+  C:0C92H         LINE#         126
+  C:0CC1H         LINE#         127
+  C:0CC1H         LINE#         128
+  C:0CC3H         LINE#         131
+  -------         ENDPROC       MAIN
+  -------         PROC          SETWAVE
+  C:0CC6H         LINE#         134
+  C:0CC6H         LINE#         135
+  C:0CC6H         LINE#         137
+  C:0D04H         LINE#         138
+  C:0D15H         LINE#         139
+  C:0D4DH         LINE#         140
+  C:0D67H         LINE#         141
+  C:0D6EH         LINE#         142
+  C:0D70H         LINE#         143
+  C:0D74H         LINE#         144
+  -------         ENDPROC       SETWAVE
+  -------         PROC          SETTIMER
+  C:0F06H         LINE#         145
+  C:0F06H         LINE#         146
+  C:0F06H         LINE#         147
+  C:0F09H         LINE#         148
+  C:0F0BH         LINE#         149
+  -------         ENDPROC       SETTIMER
+  -------         PROC          STOPTIMER
+  C:0EDAH         LINE#         150
+  C:0EDAH         LINE#         151
+  C:0EDAH         LINE#         152
+  C:0EDCH         LINE#         153
+  C:0EEDH         LINE#         154
+  C:0EEFH         LINE#         155
+  -------         ENDPROC       STOPTIMER
+  -------         PROC          FREQGEN
+  C:0E5FH         LINE#         158
+  C:0E7CH         LINE#         160
+  C:0E7FH         LINE#         161
+  C:0E82H         LINE#         163
+  -------         ENDPROC       FREQGEN
+  -------         PROC          STOPTIMEINT
+  C:0EFEH         LINE#         166
+  C:0F00H         LINE#         168
+  C:0F03H         LINE#         170
+  -------         ENDPROC       STOPTIMEINT
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  04/26/2023  00:46:00  PAGE 5
+
+
+  -------         PROC          TIMER1_INTR
+  C:0EF0H         LINE#         173
+  C:0EF2H         LINE#         176
+  C:0EF5H         LINE#         177
+  C:0EF9H         LINE#         178
+  C:0EFBH         LINE#         179
+  -------         ENDPROC       TIMER1_INTR
+  -------         PROC          _DELAY_MS
+  D:0006H         SYMBOL        ms
+  -------         DO            
+  D:0004H         SYMBOL        i
+  D:0002H         SYMBOL        j
+  -------         ENDDO         
+  C:0E9DH         LINE#         185
+  C:0E9DH         LINE#         186
+  C:0E9DH         LINE#         188
+  C:0EA7H         LINE#         189
+  C:0EAAH         LINE#         192
+  C:0EB5H         LINE#         193
+  C:0EBCH         LINE#         194
+  -------         ENDPROC       _DELAY_MS
+  -------         PROC          SEGMENTS_INIT
+  -------         DO            
+  D:0001H         SYMBOL        i
+  -------         ENDDO         
+  C:0E01H         LINE#         198
+  C:0E01H         LINE#         199
+  C:0E01H         LINE#         201
+  C:0E03H         LINE#         202
+  C:0E03H         LINE#         203
+  C:0E11H         LINE#         205
+  C:0E11H         LINE#         207
+  C:0E19H         LINE#         208
+  C:0E1BH         LINE#         209
+  C:0E1DH         LINE#         210
+  C:0E1DH         LINE#         211
+  C:0E1DH         LINE#         212
+  C:0E1FH         LINE#         215
+  C:0E1FH         LINE#         217
+  C:0E27H         LINE#         218
+  C:0E29H         LINE#         219
+  C:0E2BH         LINE#         220
+  C:0E2DH         LINE#         221
+  C:0E2FH         LINE#         222
+  C:0E31H         LINE#         225
+  C:0E31H         LINE#         227
+  C:0E39H         LINE#         228
+  C:0E3BH         LINE#         229
+  C:0E3DH         LINE#         230
+  C:0E3FH         LINE#         231
+  C:0E41H         LINE#         232
+  C:0E43H         LINE#         235
+  C:0E43H         LINE#         237
+  C:0E4BH         LINE#         238
+  C:0E4DH         LINE#         239
+  C:0E4FH         LINE#         240
+  C:0E51H         LINE#         241
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  04/26/2023  00:46:00  PAGE 6
+
+
+  C:0E53H         LINE#         242
+  C:0E53H         LINE#         243
+  C:0E53H         LINE#         246
+  C:0E5AH         LINE#         248
+  C:0E5EH         LINE#         250
+  -------         ENDPROC       SEGMENTS_INIT
+  -------         ENDMOD        DIGITSEGMENT
+
+  -------         MODULE        ?C?FPADD
+  C:0807H         PUBLIC        ?C?FPADD
+  C:0803H         PUBLIC        ?C?FPSUB
+  -------         ENDMOD        ?C?FPADD
+
+  -------         MODULE        ?C?FPMUL
+  C:08F8H         PUBLIC        ?C?FPMUL
+  -------         ENDMOD        ?C?FPMUL
+
+  -------         MODULE        ?C?FPDIV
+  C:0A01H         PUBLIC        ?C?FPDIV
+  -------         ENDMOD        ?C?FPDIV
+
+  -------         MODULE        ?C?FCAST
+  C:0AA8H         PUBLIC        ?C?FCASTC
+  C:0AA3H         PUBLIC        ?C?FCASTI
+  C:0A9EH         PUBLIC        ?C?FCASTL
+  -------         ENDMOD        ?C?FCAST
+
+  -------         MODULE        ?C?CASTF
+  C:0ADCH         PUBLIC        ?C?CASTF
+  -------         ENDMOD        ?C?CASTF
+
+  -------         MODULE        ?C?IMUL
+  C:0B5DH         PUBLIC        ?C?IMUL
+  -------         ENDMOD        ?C?IMUL
+
+  -------         MODULE        ?C?LNEG
+  C:0B6FH         PUBLIC        ?C?LNEG
+  -------         ENDMOD        ?C?LNEG
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 030BH BYTE (38%) *
+******************************************************************************
+
+Program Size: data=50.0 xdata=0 code=1816
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
